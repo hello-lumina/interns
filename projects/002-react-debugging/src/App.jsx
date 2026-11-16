@@ -8,22 +8,17 @@ const initialPlaces = [
 
 export default function App() {
   const [places, setPlaces] = useState(initialPlaces);
-  const [visiblePlaces, setVisiblePlaces] = useState(initialPlaces);
   const [name, setName] = useState("");
   const [search, setSearch] = useState("");
   const [onlyFavorites, setOnlyFavorites] = useState(false);
 
-  useEffect(() => {
-    const filtered = places.filter((place) => {
-      const matchesSearch = place.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
+const visiblePlaces = places.filter((place) => {
+  const matchesSearch = place.name
+    .toLowerCase()
+    .includes(search.toLowerCase());
 
-      return matchesSearch && (!onlyFavorites || place.favorite);
+   return matchesSearch && (!onlyFavorites || place.favorite);
     });
-
-    setVisiblePlaces(filtered);
-  }, [search]);
 
   useEffect(() => {
     document.title = `Miejsca (${places.length})`;
