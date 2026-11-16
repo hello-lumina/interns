@@ -43,12 +43,16 @@ const visiblePlaces = places.filter((place) => {
   }
 
   function toggleFavorite(id) {
-    const place = places.find((item) => item.id === id);
-
-    if (place) {
-      place.favorite = !place.favorite;
-      setPlaces(places);
-    }
+    const updatedPlaces = places.map((place) => {
+      if (place.id === id){
+        return{
+          ...place,
+          favorite: !place.favorite,
+        };
+      }
+      return place;
+    });
+    setPlaces(updatedPlaces);
   }
 
   function removePlace(id) {
