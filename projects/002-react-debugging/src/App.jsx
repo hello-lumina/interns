@@ -1,122 +1,148 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const initialPlaces = [
+  { id: 1, name: "Latarnia morska", favorite: false },
+  { id: 2, name: "Stary wiadukt", favorite: true },
+  { id: 3, name: "Leśne jezioro", favorite: false },
+];
+
+export default function App() {
+  const [places, setPlaces] = useState(initialPlaces);
+  const [visiblePlaces, setVisiblePlaces] = useState(initialPlaces);
+  const [name, setName] = useState("");
+  const [search, setSearch] = useState("");
+  const [onlyFavorites, setOnlyFavorites] = useState(false);
+
+  useEffect(() => {
+    const filtered = places.filter((place) => {
+      const matchesSearch = place.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      return matchesSearch && (!onlyFavorites || place.favorite);
+    });
+
+    setVisiblePlaces(filtered);
+  }, [search]);
+
+  useEffect(() => {
+    document.title = `Miejsca (${places.length})`;
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("places", JSON.stringify(places));
+  }, []);
+
+  function addPlace(event) {
+    if (!name.trim()) return;
+
+    const newPlace = {
+      id: Date.now(),
+      name,
+      favorite: false,
+    };
+
+    setPlaces([...places, newPlace]);
+    setName("");
+  }
+
+  function toggleFavorite(id) {
+    const place = places.find((item) => item.id === id);
+
+    if (place) {
+      place.favorite = !place.favorite;
+      setPlaces(places);
+    }
+  }
+
+  function removePlace(id) {
+    setPlaces(places.filter((place) => place.id !== id));
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="app">
+      <style>{`
+        .app {
+          width: 720px;
+          margin: 40px auto;
+          font-family: Arial, sans-serif;
+        }
 
-      <div className="ticks"></div>
+        .form, .filters {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        input {
+          padding: 10px;
+        }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        button {
+          padding: 10px;
+          cursor: pointer;
+        }
+
+        .place {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 0;
+          border-bottom: 1px solid #ddd;
+        }
+      `}</style>
+
+      <h1>Moje miejsca</h1>
+
+      <form className="form" onSubmit={addPlace}>
+        <input
+          type="text"
+          placeholder="Nazwa miejsca"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+        <button type="submit">Dodaj</button>
+      </form>
+
+      <div className="filters">
+        <input
+          type="search"
+          placeholder="Szukaj miejsc..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+
+        <label>
+          <input
+            type="checkbox"
+            checked={onlyFavorites}
+            onChange={(event) =>
+              setOnlyFavorites(event.target.checked)
+            }
+          />
+          Tylko ulubione
+        </label>
+      </div>
+
+      <p>Liczba miejsc: {places.length}</p>
+
+      <ul>
+        {visiblePlaces.map((place, index) => (
+          <li className="place" key={index}>
+            <span>{place.name}</span>
+
+            <div>
+              <button onClick={() => toggleFavorite(place.id)}>
+                {place.favorite ? "★" : "☆"}
+              </button>
+
+              <button onClick={() => removePlace(place.id)}>
+                Usuń
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
 }
-
-export default App
