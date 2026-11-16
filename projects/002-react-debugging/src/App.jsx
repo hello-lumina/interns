@@ -30,7 +30,7 @@ const visiblePlaces = places.filter((place) => {
 
   useEffect(() => {
     document.title = `Miejsca (${places.length})`;
-  }, []);
+  }, [places.length]);
 
   useEffect(() => {
     localStorage.setItem("places", JSON.stringify(places));
