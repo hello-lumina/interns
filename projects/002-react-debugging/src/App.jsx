@@ -6,8 +6,16 @@ const initialPlaces = [
   { id: 3, name: "Leśne jezioro", favorite: false },
 ];
 
+function loadPlaces(){
+  const saved = localStorage.getItem("places");
+  if(saved){
+    return JSON.parse(saved);
+  }
+  return initialPlaces
+}
+
 export default function App() {
-  const [places, setPlaces] = useState(initialPlaces);
+  const [places, setPlaces] = useState(loadPlaces);
   const [name, setName] = useState("");
   const [search, setSearch] = useState("");
   const [onlyFavorites, setOnlyFavorites] = useState(false);
@@ -26,7 +34,7 @@ const visiblePlaces = places.filter((place) => {
 
   useEffect(() => {
     localStorage.setItem("places", JSON.stringify(places));
-  }, []);
+  }, [places]);
 
   function addPlace(event) {
     event.preventDefault();
