@@ -34,6 +34,7 @@ export default function App() {
   }, []);
 
   function addPlace(event) {
+    event.preventDefault();
     if (!name.trim()) return;
 
     const newPlace = {
