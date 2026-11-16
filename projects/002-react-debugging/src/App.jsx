@@ -140,17 +140,27 @@ const visiblePlaces = places.filter((place) => {
             <span>{place.name}</span>
 
             <div>
-              <button onClick={() => toggleFavorite(place.id)}>
-                {place.favorite ? "★" : "☆"}
+              <button 
+              type="button"
+              onClick={() => toggleFavorite(place.id)}
+              aria-label={`Ulubione: ${place.name}`}
+              aria-pressed={place.favorite}
+              >
+             {place.favorite ? "★" : "☆"}
               </button>
 
-              <button onClick={() => removePlace(place.id)}>
+              <button 
+              type="button"
+              onClick={() => removePlace(place.id)}
+              aria-label={`Usuń: ${place.name}`}
+              >
                 Usuń
               </button>
             </div>
           </li>
         ))}
       </ul>
+      {visiblePlaces.length === 0 && <p>Brak miejsc.</p>}
     </main>
   );
 }
