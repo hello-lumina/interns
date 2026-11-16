@@ -71,13 +71,16 @@ const visiblePlaces = places.filter((place) => {
     <main className="app">
       <style>{`
         .app {
-          width: 720px;
+          width: 100%;
+          max-width: 720px;
           margin: 40px auto;
+          box-sizing: border-box;
           font-family: Arial, sans-serif;
         }
 
         .form, .filters {
           display: flex;
+          flex-wrap: wrap;
           gap: 12px;
           margin-bottom: 20px;
         }
