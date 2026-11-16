@@ -42,7 +42,7 @@ const visiblePlaces = places.filter((place) => {
 
     const newPlace = {
       id: Date.now(),
-      name,
+      name: name.trim(),
       favorite: false,
     };
 
@@ -135,8 +135,8 @@ const visiblePlaces = places.filter((place) => {
       <p>Liczba miejsc: {places.length}</p>
 
       <ul>
-        {visiblePlaces.map((place, index) => (
-          <li className="place" key={index}>
+        {visiblePlaces.map((place) => (
+          <li className="place" key={place.id}>
             <span>{place.name}</span>
 
             <div>
